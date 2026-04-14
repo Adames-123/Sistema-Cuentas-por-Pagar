@@ -1,0 +1,59 @@
+﻿@model Sistema_Documentos_por_Pagar.Models.Proveedor
+
+@{
+    ViewData["Title"] = "Detalle del proveedor";
+}
+
+<div class="dp-create">
+
+    <div class="dp-create__header">
+        <h1 class="dp-create__title">Detalle del proveedor</h1>
+        <p class="dp-create__subtitle">Información completa del proveedor</p>
+    </div>
+
+    <div class="dp-create__card">
+
+        <span class="dp-create__section-label">Información general</span>
+
+        <div class="dp-detail">
+            <div class="dp-detail__item">
+                <span class="dp-detail__label">Nombre</span>
+                <span class="dp-detail__value">@Model.Nombre</span>
+            </div>
+
+            <div class="dp-detail__item">
+                <span class="dp-detail__label">Tipo de persona</span>
+                <span class="dp-detail__value">@Model.TipoPersona</span>
+            </div>
+
+            <div class="dp-detail__item">
+                <span class="dp-detail__label">Cédula / RNC</span>
+                <span class="dp-detail__value">@Model.CedulaRNC</span>
+            </div>
+
+            <div class="dp-detail__item">
+                <span class="dp-detail__label">Balance</span>
+                <span class="dp-detail__value">@Model.Balance</span>
+            </div>
+
+            <div class="dp-detail__item">
+                <span class="dp-detail__label">Estado</span>
+                <span class="dp-detail__value">
+                    @(Model.Estado ? "Activo" : "Inactivo")
+                </span>
+            </div>
+        </div>
+
+        <div class="dp-create__footer">
+            <a asp-action="Edit" asp-route-id="@Model.IdProveedor" class="dp-create__btn-save">
+                Editar
+            </a>
+
+            <a asp-action="Index" class="dp-create__btn-back">
+                ← Volver al listado
+            </a>
+        </div>
+
+    </div>
+
+</div>

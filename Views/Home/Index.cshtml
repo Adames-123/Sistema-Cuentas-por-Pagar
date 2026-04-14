@@ -1,0 +1,189 @@
+﻿@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="crud-container">
+
+    <!-- Header -->
+    <div class="crud-header">
+        <div>
+            <h2 class="crud-title">Dashboard</h2>
+            <p class="crud-subtitle">Resumen de cuentas por pagar</p>
+        </div>
+    </div>
+
+    <!-- Tarjetas -->
+    <div class="tarjetas-row">
+        <div class="tarjeta">
+            <span class="tarjeta-label">Total por pagar</span>
+            <span class="tarjeta-valor">RD$ @Model.TotalPorPagar.ToString("N2")</span>
+        </div>
+        <div class="tarjeta">
+            <span class="tarjeta-label">Facturas</span>
+            <span class="tarjeta-valor">@Model.CantidadFacturas</span>
+            <span class="tarjeta-sub">documentos activos</span>
+        </div>
+        <div class="tarjeta rojo">
+            <span class="tarjeta-label">Vencido</span>
+            <span class="tarjeta-valor">RD$ @Model.TotalVencido.ToString("N2")</span>
+            <span class="tarjeta-sub text-danger">Por vencer</span>
+        </div>
+        <div class="tarjeta rojo">
+            <span class="tarjeta-label">Facturas vencidas</span>
+            <span class="tarjeta-valor">@Model.FacturasVencidas</span>
+            <span class="tarjeta-sub text-danger">requieren atención</span>
+        </div>
+    </div>
+
+    <!-- Gráficas -->
+    <div class="dashboard-graficas">
+
+        <!-- Gráfica de línea — montos por mes -->
+        <div class="crud-table-wrapper grafica-card">
+            <div class="grafica-header">
+                <span class="grafica-title">Montos por mes</span>
+            </div>
+            <div class="grafica-body">
+                <canvas id="graficoLinea"></canvas>
+            </div>
+        </div>
+
+        <!-- Gráfica de dona — distribución por concepto -->
+        <div class="crud-table-wrapper grafica-card">
+            <div class="grafica-header">
+                <span class="grafica-title">Por concepto</span>
+            </div>
+            <div class="grafica-body">
+                <canvas id="graficoDona"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Tabla próximos pagos -->
+    <div class="crud-table-wrapper">
+        <div class="grafica-header">
+            <span class="grafica-title">Próximos pagos</span>
+        </div>
+        <div class="table-responsive">
+            <table class="crud-table">
+                <thead>
+                    <tr>
+                        <th>Proveedor</th>
+                        <th>Concepto</th>
+                        <th>Monto</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.ProximosPagos.Any())
+                    {
+                        foreach (var item in Model.ProximosPagos)
+                        {
+                            <tr>
+                                <td><strong>@item.Proveedor?.Nombre</strong></td>
+                                <td>@item.Concepto?.Descripcion</td>
+                                <td>RD$ @item.Monto.ToString("N2")</td>
+                                <td>@item.FechaDocumento?.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    @if (item.Estado)
+                                    {
+                                        <span style="padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:600;border:2px solid #2e7d32;color:#2e7d32;background:white;display:inline-block;">Activo</span>
+                                    }
+                                    else
+                                    {
+                                        <span style="padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:600;border:2px solid #c62828;color:#c62828;background:white;display:inline-block;">Inactivo</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" style="text-align:center;padding:32px;color:#999;">
+                                No hay próximos pagos
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="tabla-footer">
+            Mostrando @Model.ProximosPagos.Count() próximos pagos
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Gráfica de línea
+        new Chart(document.getElementById('graficoLinea'), {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.Meses)),
+                datasets: [
+                    {
+                        label: 'Monto por mes',
+                        data: @Html.Raw(Json.Serialize(Model.MontosPorMes)),
+                        backgroundColor: 'rgba(51,105,30,0.15)',
+                        borderColor: '#33691e',
+                        borderWidth: 2,
+                        borderRadius: 6,
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: {
+                            callback: val => 'RD$ ' + val.toLocaleString()
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Gráfica de dona
+        new Chart(document.getElementById('graficoDona'), {
+            type: 'doughnut',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.ConceptosLabels ?? new string[] { "Sin datos" })),
+                datasets: [{
+                    data: @Html.Raw(Json.Serialize(Model.ConceptosMontos ?? new decimal[] { 1 })),
+                    backgroundColor: [
+                        '#33691e', '#558b2f', '#7cb342',
+                        '#9ccc65', '#dcedc8', '#1b5e20'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                cutout: '65%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font: { size: 12 }, padding: 16 }
+                    }
+                }
+            }
+        });
+    </script>
+}

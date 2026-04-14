@@ -1,0 +1,44 @@
+﻿@model Sistema_Documentos_por_Pagar.Models.Concepto
+
+@{
+    ViewData["Title"] = "Detalle del concepto";
+}
+
+<div class="dp-create">
+
+    <div class="dp-create__header">
+        <h1 class="dp-create__title">Detalle del concepto</h1>
+        <p class="dp-create__subtitle">Información del concepto</p>
+    </div>
+
+    <div class="dp-create__card">
+
+        <span class="dp-create__section-label">Información general</span>
+
+        <div class="dp-detail">
+            <div class="dp-detail__item">
+                <span class="dp-detail__label">Descripción</span>
+                <span class="dp-detail__value">@Model.Descripcion</span>
+            </div>
+
+            <div class="dp-detail__item">
+                <span class="dp-detail__label">Estado</span>
+                <span class="dp-detail__value @(Model.Estado ? "activo" : "inactivo")">
+                    @(Model.Estado ? "Activo" : "Inactivo")
+                </span>
+            </div>
+        </div>
+
+        <div class="dp-create__footer">
+            <a asp-action="Edit" asp-route-id="@Model.IdConcepto" class="dp-create__btn-save">
+                Editar
+            </a>
+
+            <a asp-action="Index" class="dp-create__btn-back">
+                ← Volver al listado
+            </a>
+        </div>
+
+    </div>
+
+</div>

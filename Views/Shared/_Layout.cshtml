@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Sistema_Documentos_por_Pagar</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/Sistema_Documentos_por_Pagar.styles.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="logo-text">
+                Cuentas por pagar
+                <span>Sistema de Pagos</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-nav">
+            <span class="nav-section-label">MENÚ</span>
+            <a class="nav-item-btn @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")"
+               asp-controller="Home" asp-action="Index">
+                <i class="fas fa-home"></i>
+                Dashboard
+            </a>
+            <a class="nav-item-btn @(ViewContext.RouteData.Values["controller"]?.ToString() == "Proveedors" ? "active" : "")"
+               asp-controller="Proveedors" asp-action="Index">
+                <i class="fas fa-truck"></i>
+                Proveedores
+            </a>
+            <a class="nav-item-btn @(ViewContext.RouteData.Values["controller"]?.ToString() == "Conceptoes" ? "active" : "")"
+               asp-controller="Conceptoes" asp-action="Index">
+                <i class="fas fa-tags"></i>
+                Conceptos
+            </a>
+            <a class="nav-item-btn @(ViewContext.RouteData.Values["controller"]?.ToString() == "DocumentoPorPagars" ? "active" : "")"
+               asp-controller="DocumentoPorPagars" asp-action="Index">
+                <i class="fas fa-file-invoice"></i>
+                Documentos por pagar
+            </a>
+            <a class="nav-item-btn @(ViewContext.RouteData.Values["controller"]?.ToString() == "Contabilizacion" ? "active" : "")"
+               asp-controller="Contabilizacion" asp-action="Index">
+                <i class="fas fa-book"></i>
+                Asiento Contable
+            </a>
+
+        </div>
+    </aside>
+
+    <div class="main-container">
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

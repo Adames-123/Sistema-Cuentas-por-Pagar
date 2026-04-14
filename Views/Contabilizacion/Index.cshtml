@@ -1,0 +1,156 @@
+@model IEnumerable<Sistema_Documentos_por_Pagar.Models.DocumentoPorPagar>
+@{
+    ViewData["Title"] = "Contabilización";
+}
+
+<div class="crud-container">
+    <div class="crud-header">
+        <div>
+            <h2 class="crud-title">Contabilización</h2>
+            <p class="crud-subtitle">Documentos pendientes de contabilizar</p>
+        </div>
+        <a asp-controller="Contabilizacion" asp-action="Contabilizados" class="btn-secondary">
+            <i class="fas fa-history"></i> Ver contabilizados
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <i class="fas fa-check-circle"></i> @TempData["Success"]
+        </div>
+    }
+    @if (TempData["Warning"] != null)
+    {
+        <div class="alert alert-warning alert-dismissible" role="alert">
+            <i class="fas fa-exclamation-triangle"></i> @TempData["Warning"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <i class="fas fa-times-circle"></i> @TempData["Error"]
+        </div>
+    }
+
+    @* Filtro por fechas *@
+    <form method="get" asp-action="Index" class="filter-bar" style="margin-bottom:1.2rem; display:flex; gap:1rem; align-items:flex-end; flex-wrap:wrap;">
+        <div>
+            <label style="font-size:0.85rem; font-weight:600;">Fecha Desde</label>
+            <input type="date" name="fechaDesde" value="@ViewBag.FechaDesde" class="form-control" />
+        </div>
+        <div>
+            <label style="font-size:0.85rem; font-weight:600;">Fecha Hasta</label>
+            <input type="date" name="fechaHasta" value="@ViewBag.FechaHasta" class="form-control" />
+        </div>
+        <button type="submit" class="btn-primary">
+            <i class="fas fa-filter"></i> Filtrar
+        </button>
+        <a asp-action="Index" class="btn-secondary">
+            <i class="fas fa-times"></i> Limpiar
+        </a>
+    </form>
+
+    @* Formulario de contabilización *@
+    <form asp-action="Contabilizar" method="post" id="formContabilizar">
+        @Html.AntiForgeryToken()
+
+        <div class="crud-table-wrapper">
+            <div class="table-responsive">
+                <table class="crud-table">
+                    <thead>
+                        <tr>
+                            <th style="width:40px;">
+                                <input type="checkbox" id="checkAll" title="Seleccionar todos" />
+                            </th>
+                            <th>Id. Transacción</th>
+                            <th>Proveedor</th>
+                            <th>Descripción</th>
+                            <th>Fecha Transacción</th>
+                            <th>Monto</th>
+                            <th>Id. Asiento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="idsSeleccionados" value="@item.IdDocumento" class="doc-check" />
+                                    </td>
+                                    <td>@item.IdDocumento</td>
+                                    <td><strong>@item.Proveedor?.Nombre</strong></td>
+                                    <td>@item.Concepto?.Descripcion</td>
+                                    <td>@item.FechaDocumento?.ToString("dd 'de' MMMM", new System.Globalization.CultureInfo("es-ES"))</td>
+                                    <td>$@item.Monto.ToString("N2")</td>
+                                    <td>
+                                        <span style="color:#999; font-style:italic;">null</span>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" style="text-align:center; padding:32px; color:#999;">
+                                    No hay documentos pendientes de contabilizar
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tabla-footer" style="display:flex; justify-content:space-between; align-items:center;">
+                <span>Mostrando @Model.Count() documento(s) pendiente(s)</span>
+                @if (Model.Any())
+                {
+                    <button type="button" class="btn-primary" onclick="confirmarContabilizar()" id="btnContabilizar" disabled>
+                        <i class="fas fa-check-double"></i> Contabilizar
+                    </button>
+                }
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Habilitar botón cuando hay al menos un check
+        document.querySelectorAll('.doc-check').forEach(function (cb) {
+            cb.addEventListener('change', actualizarBoton);
+        });
+
+        document.getElementById('checkAll')?.addEventListener('change', function () {
+            document.querySelectorAll('.doc-check').forEach(cb => cb.checked = this.checked);
+            actualizarBoton();
+        });
+
+        function actualizarBoton() {
+            const alguno = Array.from(document.querySelectorAll('.doc-check')).some(cb => cb.checked);
+            const btn = document.getElementById('btnContabilizar');
+            if (btn) btn.disabled = !alguno;
+        }
+
+        function confirmarContabilizar() {
+            const cantidad = Array.from(document.querySelectorAll('.doc-check:checked')).length;
+            Swal.fire({
+                title: '¿Contabilizar documentos?',
+                html: `Se enviarán <strong>${cantidad}</strong> documento(s) al sistema de Contabilidad.<br/>Esta acción no se puede deshacer.`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#276B3F',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, contabilizar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('formContabilizar').submit();
+                }
+            });
+        }
+    </script>
+}

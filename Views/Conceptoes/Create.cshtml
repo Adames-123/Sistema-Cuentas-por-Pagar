@@ -1,0 +1,66 @@
+﻿@model Sistema_Documentos_por_Pagar.Models.Concepto
+
+@{
+    ViewData["Title"] = "Nuevo concepto";
+}
+
+<div class="dp-create">
+
+    <div class="dp-create__header">
+        <h1 class="dp-create__title">Nuevo concepto</h1>
+        <p class="dp-create__subtitle">Registra un nuevo concepto</p>
+    </div>
+
+    <div class="dp-create__card">
+        <form asp-action="Create">
+
+            <div asp-validation-summary="ModelOnly" class="dp-create__error mb-3"></div>
+
+            <span class="dp-create__section-label">Información del concepto</span>
+
+            <div class="dp-create__field">
+                <label class="dp-create__label" asp-for="Descripcion"></label>
+                <input asp-for="Descripcion" class="dp-create__input" placeholder="Ej. Servicios básicos" />
+                <span asp-validation-for="Descripcion" class="dp-create__error"></span>
+            </div>
+
+            <hr class="dp-create__divider" />
+
+            <span class="dp-create__section-label">Configuración</span>
+
+            <div class="dp-create__toggle-row">
+                <div class="dp-create__toggle-text">
+                    <span class="dp-create__toggle-title">Estado del concepto</span>
+                    <span class="dp-create__toggle-sub" id="estadoLabel">Activo</span>
+                </div>
+
+                <label class="dp-create__switch">
+                    <input type="checkbox" asp-for="Estado" id="estadoSwitch" checked />
+                    <span class="dp-create__switch-track"></span>
+                </label>
+            </div>
+
+            <div class="dp-create__footer">
+                <button type="submit" class="dp-create__btn-save">Guardar concepto</button>
+                <a asp-action="Index" class="dp-create__btn-back">← Volver al listado</a>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        const sw = document.getElementById('estadoSwitch');
+        const lbl = document.getElementById('estadoLabel');
+
+        sw.addEventListener('change', () => {
+            lbl.textContent = sw.checked ? 'Activo' : 'Inactivo';
+        });
+    </script>
+}

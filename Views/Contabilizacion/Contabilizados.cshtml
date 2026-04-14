@@ -1,0 +1,90 @@
+@model IEnumerable<Sistema_Documentos_por_Pagar.Models.DocumentoPorPagar>
+@{
+    ViewData["Title"] = "Documentos Contabilizados";
+}
+
+<div class="crud-container">
+    <div class="crud-header">
+        <div>
+            <h2 class="crud-title">Documentos Contabilizados</h2>
+            <p class="crud-subtitle">Historial de documentos enviados a Contabilidad</p>
+        </div>
+        <a asp-controller="Contabilizacion" asp-action="Index" class="btn-secondary">
+            <i class="fas fa-arrow-left"></i> Pendientes
+        </a>
+    </div>
+
+    @* Filtro por fechas *@
+    <form method="get" asp-action="Contabilizados" style="margin-bottom:1.2rem; display:flex; gap:1rem; align-items:flex-end; flex-wrap:wrap;">
+        <div>
+            <label style="font-size:0.85rem; font-weight:600;">Fecha Desde</label>
+            <input type="date" name="fechaDesde" value="@ViewBag.FechaDesde" class="form-control" />
+        </div>
+        <div>
+            <label style="font-size:0.85rem; font-weight:600;">Fecha Hasta</label>
+            <input type="date" name="fechaHasta" value="@ViewBag.FechaHasta" class="form-control" />
+        </div>
+        <button type="submit" class="btn-primary">
+            <i class="fas fa-filter"></i> Filtrar
+        </button>
+        <a asp-action="Contabilizados" class="btn-secondary">
+            <i class="fas fa-times"></i> Limpiar
+        </a>
+    </form>
+
+    <div class="crud-table-wrapper">
+        <div class="table-responsive">
+            <table class="crud-table">
+                <thead>
+                    <tr>
+                        <th>Id. Transacción</th>
+                        <th>Proveedor</th>
+                        <th>Descripción</th>
+                        <th>Fecha Transacción</th>
+                        <th>Monto</th>
+                        <th>Id. Asiento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.IdDocumento</td>
+                                <td><strong>@item.Proveedor?.Nombre</strong></td>
+                                <td>@item.Concepto?.Descripcion</td>
+                                <td>@item.FechaDocumento?.ToString("dd 'de' MMMM", new System.Globalization.CultureInfo("es-ES"))</td>
+                                <td>$@item.Monto.ToString("N2")</td>
+                                <td>
+                                    <span style="
+                                        padding: 4px 12px;
+                                        border-radius: 20px;
+                                        font-size: 0.82rem;
+                                        font-weight: 600;
+                                        border: 2px solid #1565C0;
+                                        background: #E3F2FD;
+                                        color: #1565C0;
+                                        display: inline-block;">
+                                        @item.IdAsiento
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" style="text-align:center; padding:32px; color:#999;">
+                                No hay documentos contabilizados en este rango
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="tabla-footer">
+            Mostrando @Model.Count() documento(s) contabilizado(s)
+        </div>
+    </div>
+</div>

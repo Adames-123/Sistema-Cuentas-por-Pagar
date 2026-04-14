@@ -1,0 +1,217 @@
+﻿@model Sistema_Documentos_por_Pagar.Models.Proveedor
+@{
+    ViewData["Title"] = "Create";
+}
+
+<style>
+    .proveedor-create .page-header {
+        margin-bottom: 1.5rem;
+    }
+
+        .proveedor-create .page-header h1 {
+            font-size: 22px;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .proveedor-create .page-header p {
+            font-size: 13px;
+            color: #6b7280;
+            margin: 4px 0 0;
+        }
+
+    .proveedor-create .form-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 1.5rem;
+        max-width: 580px;
+    }
+
+    .proveedor-create .section-title {
+        font-size: 11px;
+        font-weight: 500;
+        color: #9ca3af;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin: 0 0 1rem;
+    }
+
+    .proveedor-create .form-row-custom {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .proveedor-create .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 1rem;
+    }
+
+        .proveedor-create .field label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0;
+        }
+
+        .proveedor-create .field .form-control {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: #ffffff;
+            box-shadow: none;
+        }
+
+            .proveedor-create .field .form-control:focus {
+                border-color: #276B3F;
+                box-shadow: 0 0 0 2px rgba(39, 107, 63, 0.12);
+                outline: none;
+            }
+
+    .proveedor-create .section-divider {
+        border: none;
+        border-top: 1px solid #e5e7eb;
+        margin: 1.25rem 0;
+    }
+
+    .proveedor-create .toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+        background: #f9fafb;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 1rem;
+    }
+
+    .proveedor-create .toggle-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #111827;
+        margin-bottom: 2px;
+    }
+
+    .proveedor-create .toggle-sublabel {
+        font-size: 12px;
+        color: #6b7280;
+    }
+
+    .proveedor-create .toggle-row .form-check {
+        padding-left: 0;
+        margin: 0;
+    }
+
+    .proveedor-create .toggle-row .form-check-input {
+        width: 42px !important;
+        height: 24px !important;
+        cursor: pointer;
+        margin: 0;
+    }
+
+        .proveedor-create .toggle-row .form-check-input:checked {
+            background-color: #276B3F !important;
+            border-color: #276B3F !important;
+        }
+
+    .proveedor-create .actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 1rem;
+    }
+
+    .proveedor-create .btn-green {
+        background-color: #276B3F;
+        color: #ffffff;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .proveedor-create .btn-green:hover {
+            background-color: #1f5a34;
+            color: #ffffff;
+        }
+
+    .proveedor-create .btn-link-back {
+        font-size: 14px;
+        color: #6b7280;
+        text-decoration: none;
+    }
+
+        .proveedor-create .btn-link-back:hover {
+            color: #111827;
+        }
+</style>
+
+<div class="proveedor-create">
+    <div class="page-header">
+        <h1>Nuevo proveedor</h1>
+        <p>Completa los datos para registrar un proveedor</p>
+    </div>
+    <div class="form-card">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <p class="section-title">Información general</p>
+            <div class="field">
+                <label asp-for="Nombre">Nombre</label>
+                <input asp-for="Nombre" class="form-control" placeholder="Nombre del proveedor" />
+                <span asp-validation-for="Nombre" class="text-danger" style="font-size:12px;"></span>
+            </div>
+            <div class="form-row-custom">
+                <div class="field">
+                    <label asp-for="TipoPersona">Tipo de persona</label>
+                    <select asp-for="TipoPersona" class="form-control" asp-items="ViewBag.TipoPersonaList">
+                        <option value="">Seleccione...</option>
+                    </select>
+                    <span asp-validation-for="TipoPersona" class="text-danger" style="font-size:12px;"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="CedulaRNC">Cédula / RNC</label>
+                    <input asp-for="CedulaRNC" class="form-control" placeholder="Ej. 00100000000" />
+                    <span asp-validation-for="CedulaRNC" class="text-danger" style="font-size:12px;"></span>
+                </div>
+            </div>
+            <div class="field">
+                <label asp-for="Balance">Balance</label>
+                <input asp-for="Balance" class="form-control" placeholder="0.00" />
+                <span asp-validation-for="Balance" class="text-danger" style="font-size:12px;"></span>
+            </div>
+            <hr class="section-divider" />
+            <p class="section-title">Configuración</p>
+            <div class="toggle-row">
+                <div>
+                    <div class="toggle-label">Estado del proveedor</div>
+                    <div class="toggle-sublabel" id="estadoLabel">Activo</div>
+                </div>
+                <div class="form-check form-switch m-0">
+                    <input class="form-check-input" type="checkbox" asp-for="Estado" id="estadoSwitch" checked />
+                </div>
+            </div>
+            <div class="actions">
+                <button type="submit" class="btn btn-green">Guardar proveedor</button>
+                <a asp-action="Index" class="btn-link-back">← Volver al listado</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        const sw = document.getElementById('estadoSwitch');
+        const lbl = document.getElementById('estadoLabel');
+        sw.addEventListener('change', () => lbl.textContent = sw.checked ? 'Activo' : 'Inactivo');
+    </script>
+}

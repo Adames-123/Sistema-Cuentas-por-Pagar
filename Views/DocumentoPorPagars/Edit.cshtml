@@ -1,0 +1,139 @@
+﻿@model Sistema_Documentos_por_Pagar.Models.DocumentoPorPagar
+
+@{
+    ViewData["Title"] = "Editar documento";
+}
+
+<div class="dp-create">
+
+    <div class="dp-create__header">
+        <h1 class="dp-create__title">Editar documento por pagar</h1>
+        <p class="dp-create__subtitle">Modifica los datos del documento</p>
+    </div>
+
+    <div class="dp-create__card">
+        <form asp-action="Edit">
+
+            <input type="hidden" asp-for="IdDocumento" />
+
+            <div asp-validation-summary="ModelOnly" class="dp-create__error mb-3"></div>
+
+            <span class="dp-create__section-label">Información del documento</span>
+
+            <div class="dp-create__row">
+                <div class="dp-create__field">
+                    <label class="dp-create__label" asp-for="IdProveedor"></label>
+                    <select asp-for="IdProveedor"
+                            class="dp-create__input"
+                            asp-items="ViewBag.IdProveedor">
+                        <option value="">Seleccione...</option>
+                    </select>
+                    <span asp-validation-for="IdProveedor" class="dp-create__error"></span>
+                </div>
+
+                <div class="dp-create__field">
+                    <label class="dp-create__label" asp-for="IdConcepto"></label>
+                    <select asp-for="IdConcepto"
+                            class="dp-create__input"
+                            asp-items="ViewBag.IdConcepto">
+                        <option value="">Seleccione...</option>
+                    </select>
+                    <span asp-validation-for="IdConcepto" class="dp-create__error"></span>
+                </div>
+            </div>
+
+            <div class="dp-create__row">
+                <div class="dp-create__field">
+                    <label class="dp-create__label" asp-for="NumeroDocumento"></label>
+                    <input asp-for="NumeroDocumento"
+                           class="dp-create__input"
+                           placeholder="Ej. DOC-0001" />
+                    <span asp-validation-for="NumeroDocumento" class="dp-create__error"></span>
+                </div>
+
+                <div class="dp-create__field">
+                    <label class="dp-create__label" asp-for="NumeroFactura"></label>
+                    <input asp-for="NumeroFactura"
+                           class="dp-create__input"
+                           placeholder="Ej. FAC-0001" />
+                    <span asp-validation-for="NumeroFactura" class="dp-create__error"></span>
+                </div>
+            </div>
+
+            <div class="dp-create__field">
+                <label class="dp-create__label" asp-for="Monto"></label>
+                <input asp-for="Monto"
+                       class="dp-create__input"
+                       placeholder="0.00" />
+                <span asp-validation-for="Monto" class="dp-create__error"></span>
+            </div>
+
+            <hr class="dp-create__divider" />
+
+            <span class="dp-create__section-label">Fechas</span>
+
+            <div class="dp-create__row">
+                <div class="dp-create__field">
+                    <label class="dp-create__label" asp-for="FechaDocumento"></label>
+                    <input asp-for="FechaDocumento"
+                           class="dp-create__input"
+                           type="date" />
+                    <span asp-validation-for="FechaDocumento" class="dp-create__error"></span>
+                </div>
+
+                <div class="dp-create__field">
+                    <label class="dp-create__label" asp-for="FechaRegistro"></label>
+                    <input asp-for="FechaRegistro"
+                           class="dp-create__input"
+                           type="date" />
+                    <span asp-validation-for="FechaRegistro" class="dp-create__error"></span>
+                </div>
+            </div>
+
+            <hr class="dp-create__divider" />
+
+            <span class="dp-create__section-label">Configuración</span>
+
+            <div class="dp-create__toggle-row">
+                <div class="dp-create__toggle-text">
+                    <span class="dp-create__toggle-title">Estado del documento</span>
+                    <span class="dp-create__toggle-sub" id="estadoLabel">
+                        @(Model.Estado ? "Activo" : "Inactivo")
+                    </span>
+                </div>
+
+                <label class="dp-create__switch">
+                    <input type="checkbox" asp-for="Estado" id="estadoSwitch" />
+                    <span class="dp-create__switch-track"></span>
+                </label>
+            </div>
+
+            <div class="dp-create__footer">
+                <button type="submit" class="dp-create__btn-save">Guardar cambios</button>
+                <a asp-action="Index" class="dp-create__btn-back">← Volver al listado</a>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        const sw = document.getElementById('estadoSwitch');
+        const lbl = document.getElementById('estadoLabel');
+
+        function updateLabel() {
+            lbl.textContent = sw.checked ? 'Activo' : 'Inactivo';
+        }
+
+        sw.addEventListener('change', updateLabel);
+
+        // Inicializar correctamente
+        updateLabel();
+    </script>
+}
